@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:students_db/screen/bloc/user_bloc.dart';
 import 'package:students_db/screen/home_page_screen.dart';
 
 void main() {
@@ -11,8 +13,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePageScreen(),
+    return BlocProvider(
+      create: (context) => UserBloc(),
+      child: const HomePageScreen(),
     );
   }
 }
