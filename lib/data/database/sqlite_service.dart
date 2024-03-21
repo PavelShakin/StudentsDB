@@ -1,46 +1,67 @@
+import 'package:excel/excel.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/entities/user_entity.dart';
 
 class SqliteService {
+  late Database _db;
 
-  Future<Database> initializeDB() async {
+  Future<void> initializeDB() async {
     String path = await getDatabasesPath();
 
-    return openDatabase(
+    _db = await openDatabase(
       join(path, 'database.db'),
       onCreate: (database, version) async {
-        await database.execute(
-            "CREATE TABLE Users("
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "fullName TEXT NOT NULL, "
-                "userGroup TEXT NOT NULL, "
-                "phoneNumber TEXT NOT NULL"
-                ")"
-        );
+        await database.execute("CREATE TABLE Users("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "fullName TEXT NOT NULL, "
+            "userGroup TEXT NOT NULL, "
+            "phoneNumber TEXT NOT NULL UNIQUE"
+            ")");
       },
       version: 1,
     );
   }
-  
-  Future createUser(User user) async {
-    final Database db = await initializeDB();
-    await db.insert(''
-        'Users',
-        user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace
-    );
+
+  Future<void> insertUser(User user) async {
+    await _db.insert('Users', user.toMap());
   }
-  
+
   Future<List<User>> getUsersList() async {
-    final db = await initializeDB();
-    final List<Map<String, Object?>> queryResult = await db.query('Users', orderBy: 'fullName');
+    final List<Map<String, Object?>> queryResult =
+        await _db.query('Users', orderBy: 'fullName');
     return queryResult.map((e) => User.fromMap(e)).toList();
   }
 
   Future deleteTable() async {
-    final db = await initializeDB();
-    await db.delete('Users');
+    await _db.delete('Users');
+  }
+
+  Future<void> readExcelData(List<int> bytes) async {
+    var excel = Excel.decodeBytes(bytes);
+    List<List<String>> users = [];
+
+    for (var table in excel.tables.keys) {
+      for (var row in excel.tables[table]!.rows) {
+        List<String> user = [];
+        List<String> parts = row.toString().split(', ');
+
+        for (String part in parts) {
+          if (part.startsWith('[Data(')) {
+            String data = part.substring('[Data('.length);
+            user.add(data);
+          }
+          if (part.startsWith('Data(')) {
+            String data = part.substring('Data('.length);
+            user.add(data);
+          }
+        }
+        if (user.isNotEmpty) {
+          users.add(user);
+        }
+      }
+    }
+    print('$users');
   }
 }

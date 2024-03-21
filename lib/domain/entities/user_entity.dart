@@ -1,26 +1,26 @@
 class User {
-  final int id;
+  final int? id;
   final String fullName;
-  final String group;
+  final String userGroup;
   final String phoneNumber;
 
-  User({required this.id,
+  User({this.id,
     required this.fullName,
-    required this.group,
+    required this.userGroup,
     required this.phoneNumber});
 
   User.fromMap(Map<String, dynamic> item)
       :
         id = item["id"],
         fullName = item["fullName"],
-        group = item["group"],
+        userGroup = item["userGroup"],
         phoneNumber = item["phoneNumber"];
 
-  Map<String, Object> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'fullName': fullName,
-      'group': group,
+      'userGroup': userGroup,
       'phoneNumber': phoneNumber
     };
   }
