@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:students_db/data/database/sqlite_service.dart';
 import 'package:students_db/domain/entities/user_entity.dart';
 import 'package:students_db/screen/bloc/user_bloc.dart';
@@ -55,10 +56,13 @@ class _HomePageState extends State<HomePageScreen> {
             padding: const EdgeInsets.only(right: 20),
             child: ElevatedButton(
               onPressed: () async {
-                result = await FilePicker.platform.pickFiles(allowMultiple: false);
+                result =
+                    await FilePicker.platform.pickFiles(allowMultiple: false);
                 if (result != null) {
                   dispatchEvent(
-                      context, OnFileSelected(result!.files.first.path ?? '', _sqliteService));
+                      context,
+                      OnFileSelected(
+                          result!.files.first.path ?? '', _sqliteService));
                 }
               },
               child: const Text("Select file"),
@@ -73,19 +77,68 @@ class _HomePageState extends State<HomePageScreen> {
                 : state.users.isNotEmpty
                     ? Column(children: [
                         const SizedBox(height: 100),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: SearchField<User>(
+                            suggestions: state.users
+                                .map(
+                                  (e) => SearchFieldListItem<User>(
+                                    e.fullName,
+                                    item: e,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(e.fullName),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            searchStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black.withOpacity(0.8),
+                            ),
+                            searchInputDecoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black.withOpacity(0.8),
+                                ),
+                              ),
+                            ),
+                            itemHeight: 50,
+                            hint: 'Search student by name',
+                            maxSuggestionsInViewPort: 2,
+                            emptyWidget: const Padding(
+                              padding: EdgeInsets.only(top: 25),
+                              child: Center(child: Text('No students found')),
+                            ),
+                            onSuggestionTap: (SearchFieldListItem<User> user) {
+                              dispatchEvent(context, CallPhoneNumber(user.item!.phoneNumber));
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 50),
                         Expanded(
                           child: ListView.separated(
                             padding: const EdgeInsets.all(8),
                             itemCount: state.users.length,
                             itemBuilder: (BuildContext context, int index) {
                               return SizedBox(
-                                child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 20),
                                   child: Text(
                                     state.users[index].fullName,
                                     style: const TextStyle(
                                         color: Colors.black,
                                         decoration: TextDecoration.none,
-                                        fontSize: 24),
+                                        fontSize: 20),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 2,
                                   ),
                                 ),
                               );

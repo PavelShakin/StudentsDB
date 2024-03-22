@@ -13,9 +13,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserBloc(),
-      child: const HomePageScreen(),
+    return MaterialApp(
+      home: BlocProvider(
+        create: (context) => UserBloc(),
+        child: const HomePageScreen(),
+      ),
     );
   }
 }
