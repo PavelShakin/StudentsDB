@@ -43,6 +43,7 @@ dependencies:
   flutter_bloc: ^8.1.4
   excel: ^4.0.3
   permission_handler: ^11.3.0
+  file_picker: ^8.0.0+1
 
 dev_dependencies:
   flutter_test:

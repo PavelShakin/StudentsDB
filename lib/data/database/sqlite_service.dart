@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:excel/excel.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -38,7 +40,9 @@ class SqliteService {
     await _db.delete('Users');
   }
 
-  Future<void> readExcelData(List<int> bytes) async {
+  Future<List<List<String>>> readExcelData(String filePath) async {
+    var file = File(filePath);
+    var bytes = await file.readAsBytes();
     var excel = Excel.decodeBytes(bytes);
     List<List<String>> users = [];
 
@@ -62,6 +66,6 @@ class SqliteService {
         }
       }
     }
-    print('$users');
+    return users;
   }
 }

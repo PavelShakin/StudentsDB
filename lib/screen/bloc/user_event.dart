@@ -1,3 +1,5 @@
+import 'package:students_db/data/database/sqlite_service.dart';
+
 import '../../domain/entities/user_entity.dart';
 
 abstract class UserEvent {}
@@ -14,4 +16,11 @@ class GetUsersEvent extends UserEvent {
   final isLoading = false;
 
   GetUsersEvent(this.usersList, isLoading);
+}
+
+class OnFileSelected extends UserEvent {
+  late final String filePath;
+  final SqliteService sqliteService;
+
+  OnFileSelected(this.filePath, this.sqliteService);
 }
