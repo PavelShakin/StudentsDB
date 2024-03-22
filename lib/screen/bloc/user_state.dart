@@ -3,16 +3,15 @@ import 'package:students_db/domain/entities/user_entity.dart';
 
 class UserState extends Equatable {
   final List<User> users;
-  final String filePath;
   final bool isLoading;
 
-  const UserState({required this.users, required this.filePath, required this.isLoading});
+  const UserState({required this.users, required this.isLoading});
 
   @override
-  List<Object> get props => [users, filePath, isLoading];
+  List<Object> get props => [users, isLoading];
 
   UserState copyWith({List<User>? users, String? filePath, bool? isLoading}) {
     return UserState(
-        users: users ?? this.users, filePath: filePath ?? this.filePath, isLoading: isLoading ?? this.isLoading);
+        users: users ?? this.users, isLoading: isLoading ?? this.isLoading);
   }
 }

@@ -4,7 +4,7 @@ import 'package:students_db/screen/bloc/user_event.dart';
 import 'package:students_db/screen/bloc/user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserState(users: List.empty(), filePath: '', isLoading: true)) {
+  UserBloc() : super(UserState(users: List.empty(), isLoading: true)) {
     on<ImportUsersTableEvent>((event, emit) => emit(
         state.copyWith(users: event.usersList, isLoading: event.isLoading)));
     on<GetUsersEvent>((event, emit) => emit(
@@ -17,7 +17,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           User(fullName: user[0], userGroup: user[1], phoneNumber: user[2])
         );
       }
-      emit(state.copyWith(filePath: event.filePath));
+      final updatedUsersList = await event.sqliteService.getUsersList();
+      emit(state.copyWith(users: updatedUsersList));
     });
   }
 }
