@@ -128,17 +128,22 @@ class _HomePageState extends State<HomePageScreen> {
                             padding: const EdgeInsets.all(8),
                             itemCount: state.users.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return SizedBox(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    state.users[index].fullName,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        decoration: TextDecoration.none,
-                                        fontSize: 20),
-                                    textAlign: TextAlign.left,
-                                    maxLines: 2,
+                              return GestureDetector(
+                                onTap: () {
+                                  dispatchEvent(context, CallPhoneNumber(state.users[index].phoneNumber));
+                                },
+                                child: SizedBox(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Text(
+                                      state.users[index].fullName,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          decoration: TextDecoration.none,
+                                          fontSize: 20),
+                                      textAlign: TextAlign.left,
+                                      maxLines: 2,
+                                    ),
                                   ),
                                 ),
                               );
